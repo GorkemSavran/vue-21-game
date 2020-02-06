@@ -1,24 +1,3 @@
-# 21-vue-app
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+In this game you choose one number between 1 to 21.Computer selects randomly too.The main goal here is not to 
+select the number which computer selected.And if computer selects your number.You will win.This game is made up
+with Vue.js.
