@@ -7,7 +7,7 @@
             class="boo-button"
             variant="outline-danger"
             :disabled="!gameTable.includes(item)"
-            @click="selectedNumber != null ? makeMove(item) : selectNumber(item)"
+            @click="isGameStarted === true ? makeMove(item) : slctNumber(item)"
           >{{ item }}</b-button>
           <div class="w-100"></div>
         </b-col>
@@ -17,30 +17,23 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "GameTable",
-  props: {
-    gameTable: {
-      type: Array,
-      required: true
-    },
-    selectedNumber: {
-      type: Number
-    },
-    turn: {
-      type: String
-    }
-  },
+  computed: mapGetters(["gameTable", "turn", "isGameStarted", "playerNum"]),
   methods: {
-    makeMove(item) {
-      if (this.selectedNumber === item) {
-        alert("You cannot chose your selected number!");
-      } else if (this.turn != "computer") {
-        this.$emit("make-move", item);
+    ...mapActions(["playerMakeMove", "selectNumber"]),
+    makeMove(num) {
+      if (this.turn === "computer") {
+        console.log("Not your turn!");
+      } else if (num === this.playerNum) {
+        alert("You cannot choose your own number!");
+      } else {
+        this.playerMakeMove(num);
       }
     },
-    selectNumber(num) {
-      this.$emit("select-number", num);
+    slctNumber(num) {
+      this.selectNumber(num);
     }
   }
 };

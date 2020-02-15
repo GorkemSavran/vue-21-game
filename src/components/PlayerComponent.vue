@@ -7,35 +7,29 @@
             <b-img class="b-img" v-bind="mainProps" :src="src" rounded="circle" alt="Circle image"></b-img>
           </td>
           <td>
-            <p>{{ whose.toUpperCase() }}</p>
-            <p v-if="selectedNumber">Your number is {{selectedNumber}}</p>
-            <p v-show="hurry">Hurry up!Pick a number!</p>
+            <p>{{ compId.toUpperCase() }}</p>
+            <p v-if="compId === 'player'">Your number is {{playerNum}}</p>
+            <!-- <p v-show="hurry">Hurry up!Pick a number!</p> -->
           </td>
         </tr>
       </table>
     </div>
     <div>
       <b-progress :max="15" class="progress" show-value>
-        <b-progress-bar :value="timer" :variant="progressVariant"></b-progress-bar>
+        <b-progress-bar :value="compId === turn ? remaining : 0" :variant="progressVariant"></b-progress-bar>
       </b-progress>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "PlayerComponent",
   props: {
-    timer: {
-      type: Number,
-      required: true
-    },
-    whose: {
+    compId: {
       type: String,
       required: true
-    },
-    selectedNumber: {
-      type: Number,
     }
   },
   data() {
@@ -50,28 +44,26 @@ export default {
     };
   },
   computed: {
-    hurry() {
-      if (this.timer < 5 && this.whose === "player" && this.timer != 0) {
-        return true;
-      } else {
-        return false;
+    ...mapGetters(["remaining", "turn", "playerNum"])
+  },
+  watch: {
+    remaining(newVal) {
+      if (this.turn === this.compId) {
+        if (newVal <= 5) {
+          this.progressVariant = "danger";
+        } else if (newVal <= 10) {
+          this.progressVariant = "warning";
+        } else {
+          this.progressVariant = "success";
+        }
       }
     }
   },
-  updated() {
-    if (this.timer > 10) {
-      this.progressVariant = "success";
-    } else if (this.timer > 5) {
-      this.progressVariant = "warning";
-    } else {
-      this.progressVariant = "danger";
-    }
-  },
   created() {
-    if (this.whose === "computer") {
+    if (this.compId === "computer") {
       this.src =
         "https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295430_960_720.png";
-    } else {
+    } else if (this.compId === "player") {
       this.src =
         "https://cdn.pixabay.com/photo/2016/03/31/19/58/avatar-1295431_960_720.png";
     }
